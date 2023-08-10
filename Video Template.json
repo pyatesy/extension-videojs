@@ -1,0 +1,75 @@
+{
+  "plugin_type": "widget",
+  "name": "Video Template",
+  "edit_page_url": "https://www.optimizely.com",
+  "form_schema": [
+    {
+      "label": "Position",
+      "default_value": "beforebegin",
+      "field_type": "dropdown",
+      "options": {
+        "choices": [
+          {
+            "value": "beforebegin",
+            "label": "Before"
+          },
+          {
+            "value": "afterend",
+            "label": "After"
+          },
+          {
+            "value": "afterbegin",
+            "label": "At Beginning"
+          },
+          {
+            "value": "beforeend",
+            "label": "At End Of"
+          }
+        ]
+      },
+      "name": "position"
+    },
+    {
+      "label": "Selector",
+      "default_value": "section:nth-of-type(6) > .opti-container__background",
+      "field_type": "selector",
+      "options": null,
+      "name": "selector"
+    },
+    {
+      "label": "Thumbnail",
+      "default_value": "//cdn.optimizely.com/img/6498850377/28323b7d15df466fb0375b25ca55f94a.jpg",
+      "field_type": "image",
+      "options": null,
+      "name": "thumbnail"
+    },
+    {
+      "label": "Video Title",
+      "default_value": "Watch this cool video, on the earth and stuff:",
+      "field_type": "text",
+      "options": null,
+      "name": "videotitle"
+    },
+    {
+      "label": "Video Width",
+      "default_value": 800,
+      "field_type": "number",
+      "options": null,
+      "name": "width"
+    },
+    {
+      "label": "Video Height",
+      "default_value": 400,
+      "field_type": "number",
+      "options": null,
+      "name": "height"
+    }
+  ],
+  "description": "",
+  "options": {
+    "html": "<div id=\"optimizely-extension-{{ widget.$instance }}\" class=\"video_container\">\n  <h2>{{extension.videotitle}}</h2>\n<video\n    id=\"{{ widget.$instance }}_video\"\n    class=\"video-js\"\n    controls\n    preload=\"auto\"\n    width=\"{{extension.width}}\"\n    height=\"{{extension.height}}\"\n    poster=\"{{extension.thumbnail}}\"\n    data-setup=\"{}\"\n  >\n    <source src=\"https://file-examples.com/storage/fe1dbaea7664d369bb6e226/2017/04/file_example_MP4_640_3MG.mp4\" type=\"video/mp4\" />\n    <p class=\"vjs-no-js\">\n      To view this video please enable JavaScript, and consider upgrading to a\n      web browser that <a href=\"https://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a>\n    </p>\n  </video>\n<div>",
+    "css": "@import url(\"https://vjs.zencdn.net/8.3.0/video-js.css\");\n\n.video_container{\n  width: 100%;\n  margin: auto;\n  text-align: center;\n  margin: 40px 0;\n}\n\n.video_container h2{\n  margin: 20px;\n  font-size: 1.5em;\n}",
+    "apply_js": "/*\nAuthor: Phil Yates (phil@optimizely.com) \nVersion 1.0\nLoad Video.js - https://videojs.com/ \nDescription: Add Video to any page with this video extension. Scripts and CSS automatically added to the page.\n*/\n\nvar load = (function() {\n  function _load(tag) {\n    return function(url) {\n      return new Promise(function(resolve, reject) {\n        var element = document.createElement(tag);\n        var parent = 'body';\n        var attr = 'src';\n        element.onload = function() {\n          resolve(url);\n        };\n        element.onerror = function() {\n          reject(url);\n        };\n\n        switch(tag) {\n          case 'script':\n            element.async = false;\n            break;\n          case 'link':\n            element.type = 'text/css';\n            element.rel = 'stylesheet';\n            attr = 'href';\n            parent = 'head';\n        }\n        element[attr] = url;\n        document[parent].appendChild(element);\n      });\n    };\n  } \n  return {\n    js: _load('script'),\n  };\n})();\nvar utils = window.optimizely.get('utils');\n\nutils.waitForElement(extension.selector)\n  .then(function(elem) {\n  elem.insertAdjacentHTML('beforebegin',extension.$html);\n  \n});  \n\nPromise.all([\nload.js('https://vjs.zencdn.net/8.3.0/video.min.js')\n]);\n\n",
+    "undo_js": "var extensionElement = document.getElementById('optimizely-extension-' + extension.$instance);\nif (extensionElement) {\n  extensionElement.parentElement.removeChild(extensionElement);\n}"
+  }
+}
